@@ -27,6 +27,10 @@ def login():
 def auth_verify_password(username, password):
     return passwd.check_password(username, password)
 
+@app.route('/')
+def index():
+    return ('', 204)
+
 @app.route('/<user>/<repo>/<tag>/<asset_name>')
 @auth.login_required
 def release(user, repo, tag, asset_name):
