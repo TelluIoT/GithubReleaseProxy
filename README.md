@@ -7,6 +7,22 @@ This proxy takes a personal access token from one account and offers releases wi
 
 It also provide a simpler HTTP API to download releases, removing the need to use a Github client.
 
+## Access Tokens
+
+The access tokens define the access controls.
+
+The access tokens are stored in a web passwd file. You may use [htpasswd](https://httpd.apache.org/docs/2.4/programs/htpasswd.html) from Apache or [Ansible](https://docs.ansible.com/ansible/latest/modules/htpasswd_module.html) to manipulate such a file.
+
+The user is the name of the repository, or the user should start with the name of the repository and be prepend by a slash. The password is the access token.
+
+Examples:
+
+```bash
+htpasswd -B ~/github-release-proxy-passwd secret-company/one-project 
+htpasswd -B ~/github-release-proxy-passwd secret-company/super-secret-project/token1 1234
+htpasswd -B ~/github-release-proxy-passwd secret-company/super-secret-project/token2 1234
+```
+
 ## API
 
 ```
@@ -20,20 +36,6 @@ Example:
 ```bash
 wget --user "secret-company/super-secret-project/token1" --password 1234 \
     http://localhost:8080/secret-company/super-secret-project/8.0.1/8.0.1.tar.gz
-```
-
-## Access Tokens
-
-The access tokens are stored in a web passwd file. You may use [htpasswd](https://httpd.apache.org/docs/2.4/programs/htpasswd.html) from Apache or [Ansible](https://docs.ansible.com/ansible/latest/modules/htpasswd_module.html) to manipulate such a file.
-
-The user is the name of the repository, or the user should start with the name of the repository and be prepend by a slash. The password is the access token.
-
-Examples:
-
-```bash
-htpasswd -B ~/github-release-proxy-passwd secret-company/one-project 
-htpasswd -B ~/github-release-proxy-passwd secret-company/super-secret-project/token1 1234
-htpasswd -B ~/github-release-proxy-passwd secret-company/super-secret-project/token2 1234
 ```
 
 ## Deployment
