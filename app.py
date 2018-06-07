@@ -14,7 +14,8 @@ github_personal_token = os.getenv('GITHUB_PERSONAL_TOKEN')
 http_port = int(os.getenv('HTTP_PORT', '8080'))
 
 ghclient = None
-passwd = HtpasswdFile(passwd_path, new=(not os.path.exists(passwd_path)))
+passwd = None
+passwd_mtime = 0
 
 def login():
     global ghclient
@@ -22,9 +23,35 @@ def login():
     if ghclient is None:
         app.logger.debug('Login with token')
         ghclient = github3.login(token = github_personal_token)
+        if ghclient is None:
+            app.logger.error('Unable to login with token')
+            abort(500)
+
+
+
+def update_passwd():
+    global passwd
+    global passwd_mtime
+    passwd_exists = os.path.exists(passwd_path)
+    if passwd_exists:
+        # Use the modified time to update the passwd file if necessary
+        try:
+            new_passwd_mtime = os.stat(passwd_path).st_mtime
+        except Exception as e:
+            print(str(e))
+            new_passwd_mtime = 0
+        # If the file has changed
+        if new_passwd_mtime != passwd_mtime:
+            app.logger.debug('Update passwd file')
+            passwd = HtpasswdFile(passwd_path, new = False)
+            passwd_mtime = new_passwd_mtime
+    else:
+        if passwd_mtime > 0 or passwd is None:
+            passwd = HtpasswdFile(passwd_path, new = True)
 
 @auth.verify_password
 def auth_verify_password(username, password):
+    update_passwd()
     return passwd.check_password(username, password)
 
 @app.route('/')
