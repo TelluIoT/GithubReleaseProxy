@@ -9,11 +9,11 @@ It also provide a simpler HTTP API to download releases, removing the need to us
 
 ## Access Tokens
 
-The access tokens define the access controls.
+The access tokens define the access controls. Each repository requires at least an access token.
 
 The access tokens are stored in a web passwd file. You may use [htpasswd](https://httpd.apache.org/docs/2.4/programs/htpasswd.html) from Apache or [Ansible](https://docs.ansible.com/ansible/latest/modules/htpasswd_module.html) to manipulate such a file.
 
-The user is the name of the repository, or the user should start with the name of the repository and be prepend by a slash. The password is the access token.
+The username is the name of the repository, or the username should start with the name of the repository and be prepend by a slash. The password is the access token. It is recommended to use complex and random access tokens.
 
 Examples:
 
